@@ -60,13 +60,13 @@ if [[ "${STOP_INFRA}" == true ]]; then
   echo
   echo "==> 停止 Docker 基础设施"
   INFRA_CONTAINERS=(
-    luojia_soundscape_xxl_job_admin
-    seata-server
+    luojia_soundscape_xxl_job
+    luojia_soundscape_seata
     luojia_soundscape_nacos
     luojia_soundscape_minio
     luojia_soundscape_rabbitmq
     luojia_soundscape_elasticsearch
-    luojia_soundscape_mongo
+    luojia_soundscape_mongodb
     luojia_soundscape_redis
     luojia_soundscape_mysql
   )

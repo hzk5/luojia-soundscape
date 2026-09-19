@@ -46,6 +46,100 @@ flowchart LR
 - Maven 多模块、GitHub Actions
 - uni-app、Vue 3、TypeScript、Pinia、微信小程序
 
+## 快速启动
+
+### 1. 准备环境
+
+本地需要安装 JDK 17、Maven 3.8+、Docker、Docker Compose、Git 和 curl。建议至少为 Docker 分配 6 GB 内存。
+
+```bash
+git clone https://github.com/hzk5/luojia-soundscape.git
+cd luojia-soundscape
+cp .env.example .env
+```
+
+编辑 `.env`，替换全部 `change-me`。本地 Compose 使用 MySQL root 连接多个 schema，因此 `MYSQL_PASSWORD` 应与 `MYSQL_ROOT_PASSWORD` 保持一致。微信登录需要填写自己的 `WECHAT_APP_ID` 和 `WECHAT_APP_SECRET`；仅浏览公开内容时可以先留空。
+
+### 2. 启动基础设施
+
+```bash
+docker compose --env-file .env \
+  -f deploy/docker/docker-compose.infrastructure.example.yml \
+  up -d
+
+docker compose --env-file .env \
+  -f deploy/docker/docker-compose.infrastructure.example.yml \
+  ps
+```
+
+首次创建 MySQL volume 时，`deploy/sql/` 中的业务库、Seata、Nacos 和 XXL-JOB 表会按文件名顺序自动初始化。已有同名 volume 时不会重复执行初始化脚本。
+
+### 3. 发布 Nacos 配置
+
+等待 Nacos 的 `8848` 端口就绪，然后执行：
+
+```bash
+chmod +x scripts/local/*.sh
+./scripts/local/publish-nacos-config.sh
+```
+
+脚本会发布 `common.yaml` 以及网关和七个业务服务的 `*-dev.yaml`，事务服务会自动合并 Seata 客户端配置。Docker 快速启动模板仅在本机禁用 Nacos 鉴权；共享或生产环境必须启用鉴权并重新设置身份凭据。
+
+打开 `http://127.0.0.1:9001`，使用 `.env` 中的 MinIO 账号创建 `luojia-soundscape` bucket；需要上传头像、封面或音频时，还要为该 bucket 配置合适的读取策略。
+
+### 4. 启动后端
+
+```bash
+./scripts/local/start-all.sh --skip-infra
+./scripts/local/status.sh
+```
+
+首次启动会执行 Maven 打包，然后依次启动专辑、搜索、用户、账户、订单、支付、调度和网关服务。运行日志位于 `.local-run/logs/`。
+
+验证网关和基础接口：
+
+```bash
+curl -fsS http://127.0.0.1:8500/actuator/health
+curl -fsS http://127.0.0.1:8500/api/album/category/getBaseCategoryList
+```
+
+代码没有变化时，可以跳过构建快速启动：
+
+```bash
+./scripts/local/start-all.sh --skip-build --skip-infra
+```
+
+停止 Java 服务：
+
+```bash
+./scripts/local/stop-all.sh
+```
+
+同时停止 Java 服务和基础设施容器：
+
+```bash
+./scripts/local/stop-all.sh --all
+```
+
+### 5. 启动微信小程序
+
+```bash
+cd frontend
+cp .env.example .env.local
+```
+
+在 `manifest.json` 中填写自己的微信小程序 AppID，然后使用 HBuilderX 打开 `frontend/`，运行到微信开发者工具。默认 API 地址为 `http://127.0.0.1:8500`，详细说明见 [`frontend/README.md`](frontend/README.md)。
+
+常用本地入口：
+
+| 组件 | 地址 |
+|---|---|
+| API 网关 | `http://127.0.0.1:8500` |
+| Nacos | `http://127.0.0.1:8848/nacos` |
+| MinIO Console | `http://127.0.0.1:9001` |
+| RabbitMQ Console | `http://127.0.0.1:15672` |
+| XXL-JOB | `http://127.0.0.1:8080/xxl-job-admin` |
+
 ## 五项核心性能优化
 
 ### 1. 消除微服务 N+1 调用

@@ -76,7 +76,9 @@ services:
       MYSQL_SERVICE_DB_NAME: luojia_soundscape_nacos
       MYSQL_SERVICE_USER: ${MYSQL_USERNAME:-root}
       MYSQL_SERVICE_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
-      NACOS_AUTH_ENABLE: "true"
+      # Local quick-start keeps authentication disabled. Enable it and rotate
+      # all identity values before using this template in a shared environment.
+      NACOS_AUTH_ENABLE: "false"
       NACOS_AUTH_TOKEN: ${NACOS_AUTH_TOKEN:?set NACOS_AUTH_TOKEN in .env}
       NACOS_AUTH_IDENTITY_KEY: ${NACOS_AUTH_IDENTITY_KEY:-serverIdentity}
       NACOS_AUTH_IDENTITY_VALUE: ${NACOS_AUTH_IDENTITY_VALUE:?set NACOS_AUTH_IDENTITY_VALUE in .env}
@@ -95,6 +97,8 @@ services:
       SEATA_CONFIG_NAME: file:/root/seata-config/file
       MYSQL_USERNAME: ${MYSQL_USERNAME:-root}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
     ports: ["8091:8091"]
     volumes:
       - ../config/seata-server.example.properties:/root/seata-config/file.properties:ro

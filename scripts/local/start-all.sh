@@ -5,6 +5,14 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
+ENV_FILE="${PROJECT_ROOT}/.env"
+if [[ -f "${ENV_FILE}" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "${ENV_FILE}"
+  set +a
+fi
+
 SKIP_BUILD=false
 SKIP_INFRA=false
 
@@ -37,13 +45,13 @@ if [[ "${SKIP_INFRA}" == false ]]; then
   INFRA_CONTAINERS=(
     luojia_soundscape_mysql
     luojia_soundscape_redis
-    luojia_soundscape_mongo
+    luojia_soundscape_mongodb
     luojia_soundscape_elasticsearch
     luojia_soundscape_rabbitmq
     luojia_soundscape_minio
     luojia_soundscape_nacos
-    seata-server
-    luojia_soundscape_xxl_job_admin
+    luojia_soundscape_seata
+    luojia_soundscape_xxl_job
   )
 
   for container in "${INFRA_CONTAINERS[@]}"; do
@@ -60,7 +68,7 @@ if [[ "${SKIP_INFRA}" == false ]]; then
     fi
   done
 
-  wait_for_port "MySQL" 3307 120
+  wait_for_port "MySQL" 3306 120
   wait_for_port "Redis" 6379 60
   wait_for_port "MongoDB" 27017 60
   wait_for_port "Elasticsearch" 9200 180
