@@ -1,0 +1,30 @@
+server:
+  port: 8500
+
+spring:
+  application:
+    name: luojia-soundscape-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: album
+          uri: lb://luojia-soundscape-album
+          predicates: [Path=/api/album/**]
+        - id: search
+          uri: lb://luojia-soundscape-search
+          predicates: [Path=/api/search/**]
+        - id: user
+          uri: lb://luojia-soundscape-user
+          predicates: [Path=/api/user/**]
+        - id: order
+          uri: lb://luojia-soundscape-order
+          predicates: [Path=/api/order/**]
+        - id: account
+          uri: lb://luojia-soundscape-account
+          predicates: [Path=/api/account/**]
+        - id: payment
+          uri: lb://luojia-soundscape-payment
+          predicates: [Path=/api/payment/**]
+        - id: dispatch
+          uri: lb://luojia-soundscape-dispatch
+          predicates: [Path=/api/dispatch/**]

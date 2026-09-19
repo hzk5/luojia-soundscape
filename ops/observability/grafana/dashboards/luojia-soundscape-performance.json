@@ -1,0 +1,51 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "panels": [
+    {
+      "title": "Request rate by service",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [{"expr": "sum(rate(http_server_requests_seconds_count[1m])) by (application)", "legendFormat": "{{application}}"}]
+    },
+    {
+      "title": "HTTP P95",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [{"expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[1m])) by (le, application))", "legendFormat": "{{application}}"}]
+    },
+    {
+      "title": "HTTP error ratio",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "targets": [{"expr": "sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[1m])) by (application) / clamp_min(sum(rate(http_server_requests_seconds_count[1m])) by (application), 0.001)", "legendFormat": "{{application}}"}]
+    },
+    {
+      "title": "JVM heap used",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "targets": [{"expr": "sum(jvm_memory_used_bytes{area=\"heap\"}) by (application)", "legendFormat": "{{application}}"}]
+    },
+    {
+      "title": "Cache outcomes",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+      "targets": [{"expr": "sum(rate(luojia_soundscape_cache_requests_total[1m])) by (result)", "legendFormat": "{{result}}"}]
+    },
+    {
+      "title": "Executor queue depth",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+      "targets": [{"expr": "executor_queued_tasks", "legendFormat": "{{name}}"}]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 41,
+  "tags": ["luojia_soundscape", "performance"],
+  "templating": {"list": []},
+  "time": {"from": "now-15m", "to": "now"},
+  "timezone": "browser",
+  "title": "Luojia Soundscape Performance",
+  "uid": "luojia-soundscape-performance",
+  "version": 1
+}

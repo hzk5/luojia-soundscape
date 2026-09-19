@@ -1,0 +1,11 @@
+{
+  "name": "luojia-soundscape-miniapp",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "dayjs": "^1.11.7",
+    "mitt": "^3.0.0",
+    "pinia": "^2.0.33",
+    "pinia-plugin-persist-uni": "^1.2.0"
+  }
+}

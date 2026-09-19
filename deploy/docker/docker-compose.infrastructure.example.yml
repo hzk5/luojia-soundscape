@@ -1,0 +1,122 @@
+name: luojia-soundscape
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: luojia_soundscape_mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in .env}
+    ports: ["3306:3306"]
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ../sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: luojia_soundscape_redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    ports: ["6379:6379"]
+    volumes: ["redis-data:/data"]
+
+  mongodb:
+    image: mongo:6.0
+    container_name: luojia_soundscape_mongodb
+    ports: ["27017:27017"]
+    volumes: ["mongodb-data:/data/db"]
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: luojia_soundscape_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-luojia}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?set RABBITMQ_PASSWORD in .env}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/luojia-soundscape}
+    ports: ["5672:5672", "15672:15672"]
+    volumes: ["rabbitmq-data:/var/lib/rabbitmq"]
+
+  minio:
+    image: minio/minio:latest
+    container_name: luojia_soundscape_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-luojia}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?set MINIO_SECRET_KEY in .env}
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["minio-data:/data"]
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    container_name: luojia_soundscape_elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS:--Xms512m -Xmx512m}
+    ports: ["9200:9200"]
+    volumes: ["elasticsearch-data:/usr/share/elasticsearch/data"]
+
+  nacos:
+    image: nacos/nacos-server:v2.2.3
+    container_name: luojia_soundscape_nacos
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_DB_NAME: luojia_soundscape_nacos
+      MYSQL_SERVICE_USER: ${MYSQL_USERNAME:-root}
+      MYSQL_SERVICE_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+      NACOS_AUTH_ENABLE: "true"
+      NACOS_AUTH_TOKEN: ${NACOS_AUTH_TOKEN:?set NACOS_AUTH_TOKEN in .env}
+      NACOS_AUTH_IDENTITY_KEY: ${NACOS_AUTH_IDENTITY_KEY:-serverIdentity}
+      NACOS_AUTH_IDENTITY_VALUE: ${NACOS_AUTH_IDENTITY_VALUE:?set NACOS_AUTH_IDENTITY_VALUE in .env}
+    ports: ["8848:8848", "9848:9848"]
+
+  seata-server:
+    image: seataio/seata-server:1.6.1
+    container_name: luojia_soundscape_seata
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SEATA_PORT: 8091
+      STORE_MODE: db
+      SEATA_IP: 127.0.0.1
+      SEATA_CONFIG_NAME: file:/root/seata-config/file
+      MYSQL_USERNAME: ${MYSQL_USERNAME:-root}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+    ports: ["8091:8091"]
+    volumes:
+      - ../config/seata-server.example.properties:/root/seata-config/file.properties:ro
+
+  xxl-job-admin:
+    image: xuxueli/xxl-job-admin:2.4.0
+    container_name: luojia_soundscape_xxl_job
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PARAMS: >-
+        --spring.datasource.url=jdbc:mysql://mysql:3306/luojia_soundscape_xxl_job?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+        --spring.datasource.username=${MYSQL_USERNAME:-root}
+        --spring.datasource.password=${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+        --xxl.job.accessToken=${XXL_JOB_ACCESS_TOKEN:?set XXL_JOB_ACCESS_TOKEN in .env}
+    ports: ["8080:8080"]
+
+volumes:
+  mysql-data:
+  redis-data:
+  mongodb-data:
+  rabbitmq-data:
+  minio-data:
+  elasticsearch-data:

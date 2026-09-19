@@ -1,0 +1,9 @@
+server:
+  port: 8502
+spring:
+  application:
+    name: luojia-soundscape-search
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS:http://127.0.0.1:9200}
+    username: ${ELASTICSEARCH_USERNAME:}
+    password: ${ELASTICSEARCH_PASSWORD:}

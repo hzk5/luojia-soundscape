@@ -1,0 +1,19 @@
+server:
+  port: 8506
+spring:
+  application:
+    name: luojia-soundscape-payment
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/luojia_soundscape_payment?serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+wechat:
+  v3pay:
+    mock-enabled: ${WECHAT_PAY_MOCK_ENABLED:true}
+    appid: ${WECHAT_APP_ID:}
+    merchantId: ${WECHAT_PAY_MERCHANT_ID:}
+    privateKeyPath: ${WECHAT_PAY_PRIVATE_KEY_PATH:}
+    merchantSerialNumber: ${WECHAT_PAY_SERIAL_NUMBER:}
+    apiV3key: ${WECHAT_PAY_API_V3_KEY:}
+    notifyUrl: ${WECHAT_PAY_NOTIFY_URL:}

@@ -1,0 +1,12 @@
+server:
+  port: 8504
+spring:
+  application:
+    name: luojia-soundscape-order
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/luojia_soundscape_order?serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+order:
+  cancel: 900

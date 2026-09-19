@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dist-ssr/
+unpackage/
+.hbuilderx/
+.idea/
+.vscode/
+project.config.json
+project.private.config.json
+manifest.local.json
+.env
+.env.*
+!.env.example
+*.local
+*.log
+.DS_Store

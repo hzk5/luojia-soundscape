@@ -1,0 +1,40 @@
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      database: 0
+      timeout: 2s
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 5
+          min-idle: 0
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://127.0.0.1:27017/luojia_soundscape}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST:/luojia-soundscape}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 500
+        read-timeout: 1500
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true

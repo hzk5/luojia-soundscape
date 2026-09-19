@@ -1,0 +1,11 @@
+seata:
+  enabled: true
+  tx-service-group: ${spring.application.name}-group
+  service:
+    vgroup-mapping:
+      luojia-soundscape-account-group: default
+      luojia-soundscape-order-group: default
+      luojia-soundscape-payment-group: default
+      luojia-soundscape-user-group: default
+    grouplist:
+      default: ${SEATA_SERVER_ADDR:127.0.0.1:8091}

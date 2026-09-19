@@ -1,0 +1,113 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Maven template
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+.idea/
+.vscode/
+.run/
+.settings/
+.classpath
+.project
+*.suo
+*.user
+
+## File-based project format:
+*.iws
+*.iml
+*.ipr
+CLAUDE.md
+## Plugin-specific files:
+
+# IntelliJ
+/out/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.local
+application-local.yml
+application-local.yaml
+application-local.properties
+bootstrap-local.yml
+bootstrap-local.yaml
+bootstrap-local.properties
+project.private.config.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+secrets/
+
+# Agent-local metadata
+.claude/
+.codex/
+
+# Logs, dumps and temporary files
+*.log
+logs/
+log/
+hs_err_pid*.log
+replay_pid*.log
+*.hprof
+*.dump
+*.tmp
+*.pid
+*.jfr
+*.prof
+*.trace
+*.har
+*.orig
+*.rej
+
+# Front-end/package-manager output
+node_modules/
+dist/
+coverage/
+unpackage/
+.hbuilderx/
+project.config.json
+project.private.config.json
+manifest.local.json
+*.wxapkg
+
+# Local one-click launcher runtime files
+.local-run/
+ops/observability/data/
+scripts/perf/results/
+scripts/perf/manifests/
+scripts/perf/**/*.env
+
+# Local infrastructure state and database exports
+deploy/docker/data/
+docker-data/
+volumes/
+*.sql.gz
+*.sql.zip
+*.bak

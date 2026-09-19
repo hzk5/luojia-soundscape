@@ -1,0 +1,20 @@
+server:
+  port: 8501
+spring:
+  application:
+    name: luojia-soundscape-album
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/luojia_soundscape_album?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useUnicode=true&useSSL=false
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+minio:
+  endpointUrl: ${MINIO_ENDPOINT:http://127.0.0.1:9000}
+  accessKey: ${MINIO_ACCESS_KEY}
+  secreKey: ${MINIO_SECRET_KEY}
+  bucketName: ${MINIO_BUCKET:luojia-soundscape}
+vod:
+  appId: ${TENCENT_VOD_APP_ID:}
+  secretId: ${TENCENT_VOD_SECRET_ID:}
+  secretKey: ${TENCENT_VOD_SECRET_KEY:}
+  region: ${TENCENT_VOD_REGION:ap-beijing}

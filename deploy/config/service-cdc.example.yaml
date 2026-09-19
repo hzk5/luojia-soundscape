@@ -1,0 +1,8 @@
+server:
+  port: 8601
+spring:
+  application:
+    name: luojia-soundscape-cdc
+canal:
+  server: ${CANAL_SERVER_ADDR:127.0.0.1:11111}
+  destination: ${CANAL_DESTINATION:luojiaSoundscapeTopic}
